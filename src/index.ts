@@ -22,9 +22,8 @@ export class ChatAgent extends AIChatAgent<Env> {
       maxTokens: 1024
     });
 
-    // 返回流式响应
-    // AIChatAgent 自动处理流式传输、断线重连、消息广播
-    return result.toDataStreamResponse({
+    // 返回流式响应 - 需要 await
+    return await result.toDataStreamResponse({
       onFinish: onFinish
     });
   }
