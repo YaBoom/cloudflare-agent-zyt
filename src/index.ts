@@ -33,6 +33,9 @@ export class ChatAgent extends AIChatAgent<Env> {
 // Worker 入口：使用官方路由
 import { routeAgentRequest } from "agents";
 
+// 导出 ChatAgent 类供框架使用
+export { ChatAgent };
+
 // 静态 HTML 内容（内联，无需外部文件）
 const HTML_CONTENT = `<!DOCTYPE html>
 <html lang="zh-CN">
@@ -254,8 +257,11 @@ export default {
       });
     }
     
-    // Agent 路由
-    return routeAgentRequest(request, env) || 
-           new Response("Not found", { status: 404 });
+    // Agent 路由 - 显式指定 agent 类映射
+    return routeAgentRequest(request, env, {
+      agents: {
+        ChatAgent: ChatAgent
+      }
+    }) || new Response("Not found", { status: 404 });
   }
 } satisfies ExportedHandler<Env>;
