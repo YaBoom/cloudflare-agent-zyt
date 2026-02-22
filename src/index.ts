@@ -4,6 +4,7 @@ import { streamText } from "ai";
 
 export interface Env {
   AI: Ai;
+  ChatAgent: DurableObjectNamespace<ChatAgent>;
 }
 
 // 官方标准用法：继承 AIChatAgent，只实现 onChatMessage 方法
