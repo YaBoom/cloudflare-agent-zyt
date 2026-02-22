@@ -1,0 +1,27 @@
+name = "cloudflare-agent-zyt"
+main = "src/index.ts"
+compatibility_date = "2026-02-22"
+
+# AI 绑定 - Workers AI
+[ai]
+binding = "AI"
+
+# Durable Objects 配置
+[[durable_objects.bindings]]
+name = "AGENT"
+class_name = "ChatAgent"
+
+# Durable Objects 迁移配置（必须）
+[[migrations]]
+tag = "v1"
+new_classes = ["ChatAgent"]
+
+# 可选：KV 存储（用于缓存或其他数据）
+# [[kv_namespaces]]
+# binding = "AGENT_KV"
+# id = "your_kv_namespace_id_here"
+
+# 可选：R2 存储（用于文件上传）
+# [[r2_buckets]]
+# binding = "AGENT_BUCKET"
+# bucket_name = "your_bucket_name"

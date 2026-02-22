@@ -1,0 +1,24 @@
+{
+  "name": "cloudflare-agent-zyt",
+  "version": "0.1.0",
+  "description": "基于 Cloudflare Agents SDK v0.5.0 的边缘 AI Agent 实验项目",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "build": "tsc",
+    "cf-typegen": "wrangler types"
+  },
+  "keywords": ["cloudflare", "ai-agent", "workers", "durable-objects", "edge-ai"],
+  "author": "YaBoom",
+  "license": "MIT",
+  "dependencies": {
+    "agents": "^0.5.0",
+    "@cloudflare/ai-chat": "^0.1.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250214.0",
+    "typescript": "^5.3.0",
+    "wrangler": "^3.0.0"
+  }
+}
