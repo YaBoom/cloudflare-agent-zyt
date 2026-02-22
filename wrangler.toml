@@ -3,20 +3,13 @@ main = "src/index.ts"
 compatibility_date = "2026-02-22"
 compatibility_flags = ["nodejs_compat"]
 
-# AI 绑定
 [ai]
 binding = "AI"
 
-# Durable Objects 绑定
 [[durable_objects.bindings]]
 name = "ChatAgent"
 class_name = "ChatAgent"
 
-# 迁移配置
 [[migrations]]
 tag = "v1"
 new_classes = ["ChatAgent"]
-
-# 静态资源
-[site]
-bucket = "./public"
