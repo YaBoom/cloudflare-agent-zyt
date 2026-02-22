@@ -1,7 +1,9 @@
 import { AIChatAgent } from "@cloudflare/ai-chat";
+import { createWorkersAI } from "workers-ai-provider";
+import { streamText } from "ai";
 
 export interface Env {
-  AI: any;
+  AI: Ai;
   AGENT: DurableObjectNamespace<ChatAgent>;
 }
 
@@ -56,39 +58,41 @@ export class ChatAgent extends AIChatAgent<Env> {
         this.state.messages = this.state.messages.slice(-20);
       }
 
-      // Call Workers AI with retry logic (SDK v0.5.0 feature)
-      let response;
-      try {
-        response = await this.env.AI.run(
-          "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
-          { 
-            messages: this.state.messages,
-            max_tokens: 1024
-          }
-        );
-      } catch (aiError) {
-        console.error("AI inference error:", aiError);
+      // Create Workers AI provider with streaming support (NEW API)
+      const workersai = createWorkersAI({ binding: this.env.AI });
+      
+      // Use streamText for streaming response (NEW API)
+      const result = streamText({
+        model: workersai("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
+        messages: this.state.messages,
+        maxTokens: 1024
+      });
+
+      // Collect the full response for storage
+      let fullResponse = "";
+      
+      // Stream chunks to client
+      for await (const chunk of result.textStream) {
+        fullResponse += chunk;
         connection.send(JSON.stringify({
-          type: "error",
-          content: "AI服务暂时不可用，请稍后重试"
+          type: "chunk",
+          content: chunk,
+          timestamp: new Date().toISOString()
         }));
-        return;
       }
 
       // Add assistant response to history
-      const assistantMessage = response.response || "抱歉，我无法理解您的问题。";
       this.state.messages.push({
         role: "assistant",
-        content: assistantMessage
+        content: fullResponse
       });
 
       // Persist state to storage
       await this.ctx.storage.put("state", this.state);
 
-      // Send response back to client
+      // Send completion signal
       connection.send(JSON.stringify({
-        type: "message",
-        content: assistantMessage,
+        type: "done",
         timestamp: new Date().toISOString()
       }));
 
@@ -127,3 +131,17 @@ export class ChatAgent extends AIChatAgent<Env> {
     });
   }
 }
+
+// Default export for Cloudflare Workers
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const sessionId = url.pathname.split("/").pop() || "default";
+    
+    // Get or create Durable Object instance
+    const id = env.AGENT.idFromName(sessionId);
+    const agent = env.AGENT.get(id);
+    
+    return agent.fetch(request);
+  }
+};
