@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 [ai]
 binding = "AI"
 
-# Durable Objects 绑定 - 必须！
+# Durable Objects 绑定
 [[durable_objects.bindings]]
 name = "ChatAgent"
 class_name = "ChatAgent"
@@ -16,3 +16,7 @@ class_name = "ChatAgent"
 [[migrations]]
 tag = "v1"
 new_classes = ["ChatAgent"]
+
+# 静态资源
+[site]
+bucket = "./public"
