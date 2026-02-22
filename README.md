@@ -11,8 +11,8 @@
 |------|------|
 | **名称** | cloudflare-agent-zyt |
 | **版本** | 0.1.0 (实验性) |
-| **技术栈** | TypeScript + AIChatAgent + Vercel AI SDK + Workers AI |
-| **SDK版本** | agents@^0.5.0, ai@^4.0.0, workers-ai-provider@^0.2.0 |
+| **技术栈** | TypeScript + @cloudflare/ai-chat + Vercel AI SDK + Workers AI |
+| **SDK版本** | @cloudflare/ai-chat@^0.1.3, agents@^0.5.1, ai@^6.0.94, workers-ai-provider@^3.1.2 |
 | **状态** | 🧪 可运行但有局限 |
 
 ## ✨ 核心功能
