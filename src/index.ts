@@ -4,7 +4,7 @@ import { streamText, type StreamTextOnFinishCallback, type ToolSet } from "ai";
 
 export interface Env {
   AI: Ai;
-  ChatAgent: DurableObjectNamespace<ChatAgent>;
+  chatagent: DurableObjectNamespace<ChatAgent>;
 }
 
 // 官方标准用法：继承 AIChatAgent，只实现 onChatMessage 方法
@@ -43,7 +43,7 @@ const HTML = `<!DOCTYPE html>
 <button onclick="send()" style="padding:10px 20px;">发送</button>
 <script>
 let ws, session = 'test-' + Math.random().toString(36).substr(2, 9);
-const wsUrl = 'ws://' + location.host + '/agents/ChatAgent/' + session;
+const wsUrl = 'ws://' + location.host + '/agents/chatagent/' + session;
 ws = new WebSocket(wsUrl);
 ws.onopen = () => { document.getElementById('status').textContent = '● 已连接'; document.getElementById('status').style.color = 'green'; };
 ws.onmessage = (e) => { const d = JSON.parse(e.data); if(d.role === 'assistant') addMsg('Agent: ' + d.content); };

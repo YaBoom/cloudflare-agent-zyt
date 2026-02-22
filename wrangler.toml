@@ -7,14 +7,9 @@ compatibility_flags = ["nodejs_compat"]
 binding = "AI"
 
 [[durable_objects.bindings]]
-name = "ChatAgent"
+name = "chatagent"
 class_name = "ChatAgent"
 
 [[migrations]]
 tag = "v1"
 new_classes = ["ChatAgent"]
-
-# 本地开发 Durable Object 存储
-[[durable_objects.storage]]
-binding = "ChatAgent"
-id = "local"
