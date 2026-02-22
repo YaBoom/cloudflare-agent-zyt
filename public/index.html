@@ -86,7 +86,7 @@
             if (wsUrl.startsWith('http://')) wsUrl = wsUrl.replace('http://', 'ws://');
             else if (wsUrl.startsWith('https://')) wsUrl = wsUrl.replace('https://', 'wss://');
             
-            const fullUrl = wsUrl + '/agents/ChatAgent/' + sessionId;
+            const fullUrl = wsUrl + '/agents/chatagent/' + sessionId;
             
             updateStatus('connecting', '连接中...');
             connectBtn.disabled = true;
