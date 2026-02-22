@@ -19,7 +19,7 @@ export class ChatAgent extends AIChatAgent<Env> {
   }
 }
 
-// 内联 HTML
+// HTML 测试页面
 const HTML = `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><title>Agent</title></head>
 <body style="font-family:sans-serif;max-width:600px;margin:50px auto;padding:20px;">
@@ -29,26 +29,20 @@ const HTML = `<!DOCTYPE html>
 <input id="m" placeholder="消息..." style="width:70%;padding:8px"> <button onclick="send()">发送</button>
 <script>
 let w,s='s-'+Math.random().toString(36).slice(2,8);
-function connect(){w=new WebSocket('ws://'+location.host+'/ws/'+s);w.onopen=()=>{document.getElementById('s').textContent='● 已连接';document.getElementById('s').style.color='green'};w.onmessage=e=>{let d=JSON.parse(e.data);if(d.role=='assistant')add('Agent: '+d.content)};w.onclose=()=>{document.getElementById('s').textContent='● 断开';document.getElementById('s').style.color='red'}}function add(t){document.getElementById('c').innerHTML+='<div>'+t+'</div>'}function send(){let i=document.getElementById('m');if(i.value){w.send(JSON.stringify({message:i.value}));add('你: '+i.value);i.value=''}}connect();
+function connect(){w=new WebSocket('ws://'+location.host+'/agents/chatagent/'+s);w.onopen=()=>{document.getElementById('s').textContent='● 已连接';document.getElementById('s').style.color='green'};w.onmessage=e=>{let d=JSON.parse(e.data);if(d.role=='assistant')add('Agent: '+d.content)};w.onclose=()=>{document.getElementById('s').textContent='● 断开';document.getElementById('s').style.color='red'}}function add(t){document.getElementById('c').innerHTML+='<div>'+t+'</div>'}function send(){let i=document.getElementById('m');if(i.value){w.send(JSON.stringify({message:i.value}));add('你: '+i.value);i.value=''}}connect();
 </script></body></html>`;
+
+import { routeAgentRequest } from "agents";
 
 export default {
   async fetch(request: Request, env: Env) {
     const url = new URL(request.url);
     
-    // 首页
     if (url.pathname === '/' || url.pathname === '/index.html') {
       return new Response(HTML, { headers: { 'Content-Type': 'text/html' } });
     }
     
-    // WebSocket 端点
-    if (url.pathname.startsWith('/ws/')) {
-      const sessionId = url.pathname.slice(4) || 'default';
-      const id = env.chatagent.idFromName(sessionId);
-      const agent = env.chatagent.get(id);
-      return agent.fetch(request);
-    }
-    
-    return new Response("Not found", { status: 404 });
+    // 使用官方路由 - 它会自动处理 WebSocket 协议
+    return (await routeAgentRequest(request, env)) || new Response("Not found", { status: 404 });
   }
 } satisfies ExportedHandler<Env>;
